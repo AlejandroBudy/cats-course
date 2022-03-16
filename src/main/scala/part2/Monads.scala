@@ -51,6 +51,10 @@ object Monads {
     def pure[A](value: A): M[A]
 
     def flatMap[A, B](ma: M[A])(f: A => M[B]): M[B]
+
+    //Implement
+    def map[A, B](ma: M[A])(f: A => B): M[B] =
+      flatMap(ma)(a => pure(f(a)))
   }
 
   // Cats Monad
@@ -79,6 +83,38 @@ object Monads {
 
   def getPairsF[M[_], A, B](ma: M[A], mb: M[B])(implicit monad: Monad[M]): M[(A, B)] =
     monad.flatMap(ma)(a => monad.map(mb)(b => (a, b)))
+
+  // extensions methods - weirder imports - pure, flatMap
+
+  import cats.syntax.applicative._ // pure is here
+
+  val oneOption: Option[Int] = 1.pure[Option] // implicit Monad[Option] will be used
+  val oneList: List[Int] = 1.pure[List]
+
+  import cats.syntax.flatMap._ // flatMap is here
+
+  val oneOptionTransformed: Option[Int] = oneOption.flatMap(x => (x + 1).pure[Option])
+
+  //TODO 3: Implement map method in MyMonad
+  // def map[A, B](ma: M[A])(f: A => B): M[B] =
+  // flatMap(ma)(a => pure(f(a)))
+
+  // Monads extends Functors
+
+  import cats.syntax.functor._
+
+  val oneOptionMapped: Option[Int] = Monad[Option].map(Option(2))(_ + 1)
+  val oneOptionMapped2: Option[Int] = oneOption.map(_ + 2)
+
+
+  def getPairsShorter[M[_] : Monad, A, B](ma: M[A], mb: M[B]): M[(A, B)] =
+    for {
+      a <- ma
+      b <- mb
+    } yield (a, b)
+
+  def getPairsShorterMap[M[_] : Monad, A, B](ma: M[A], mb: M[B]): M[(A, B)] =
+    ma.flatMap(a => mb.map((a, _)))
 
   def main(args: Array[String]): Unit = {
 
