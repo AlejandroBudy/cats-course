@@ -23,9 +23,9 @@ object MonadTransformers {
 
   import cats.data.EitherT
 
-  val listOfEithers: EitherT[List, String, Int] = EitherT(List(Left("error"), Right("ok")))
+  val listOfEithers: EitherT[List, String, Int] = EitherT(List(Left("error"), Right(1)))
   implicit val ec: ExecutionContextExecutorService = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(8))
-  val futureOfEither: EitherT[Future, String, Int] = EitherT(Future(Left("done")))
+  val futureOfEither: EitherT[Future, String, Int] = EitherT(Future[Either[String, Int]](Left("done")))
 
   /*
    TODO exercise
@@ -42,12 +42,8 @@ object MonadTransformers {
   type AsyncResponse[T] = EitherT[Future, String, T]
 
   def getBandWidth(server: String): AsyncResponse[Int] = bandwidths.get(server) match {
-    case None => EitherT(Future {
-      Left("Not found")
-    })
-    case Some(b) => EitherT(Future {
-      Right(b)
-    })
+    case None => EitherT(Future[Either[String, Int]](Left("Not found")))
+    case Some(b) => EitherT(Future[Either[String, Int]](Right(b)))
   }
 
   import cats.instances.future._
