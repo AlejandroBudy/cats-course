@@ -1,4 +1,4 @@
-package part2
+package part2_abstract_math
 
 object Monoids {
 
