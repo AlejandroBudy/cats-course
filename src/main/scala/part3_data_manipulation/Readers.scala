@@ -1,8 +1,5 @@
 package part3_data_manipulation
 
-import cats.Id
-import cats.data.{Kleisli, Reader}
-
 object Readers {
 
   /*
