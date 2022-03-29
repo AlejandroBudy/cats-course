@@ -1,4 +1,4 @@
-package part4_applicatives
+package core.part4_applicatives
 
 import cats.Monad
 import cats.MonadError

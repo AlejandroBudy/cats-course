@@ -1,4 +1,4 @@
-package part4_applicatives
+package core.part4_applicatives
 
 object Applicatives {
 

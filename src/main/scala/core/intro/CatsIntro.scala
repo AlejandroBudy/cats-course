@@ -1,4 +1,4 @@
-package intro
+package core.intro
 
 object CatsIntro {
 

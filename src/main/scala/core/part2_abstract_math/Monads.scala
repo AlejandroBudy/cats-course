@@ -1,4 +1,4 @@
-package part2_abstract_math
+package core.part2_abstract_math
 
 import java.util.concurrent.Executors
 import scala.concurrent.{ExecutionContext, Future}

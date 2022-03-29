@@ -1,4 +1,4 @@
-package part3_data_manipulation
+package core.part3_data_manipulation
 
 object Evaluation {
 

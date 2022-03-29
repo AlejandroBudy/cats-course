@@ -1,4 +1,4 @@
-package part2_abstract_math
+package core.part2_abstract_math
 
 import scala.annotation.tailrec
 
