@@ -18,7 +18,7 @@ object UsingMonads {
   import cats.instances.either._
 
   val errorMonad: Monad[ErrorOr] = Monad[ErrorOr]
-  val anEither: ErrorOr[Int] = errorMonad.pure(45)
+  val anEither: ErrorOr[Int]     = errorMonad.pure(45)
 
   type LoadingOr[T] = Either[String, T]
 
@@ -31,8 +31,8 @@ object UsingMonads {
     if (orderStatus.orderId > 1000) Left("Not available yet, refreshing data...")
     else Right("Madrid, SP")
 
-  val orderId = 457L
-  val loadingMonad: Monad[LoadingOr] = Monad[LoadingOr]
+  val orderId                          = 457L
+  val loadingMonad: Monad[LoadingOr]   = Monad[LoadingOr]
   val orderLocation: LoadingOr[String] = loadingMonad.flatMap(getOrderStatus(orderId))(order => trackLocation(order))
 
   // use extension methods
@@ -43,7 +43,7 @@ object UsingMonads {
   val orderStatusBetter: LoadingOr[String] = getOrderStatus(orderId).flatMap(trackLocation)
   val orderStatusFor: LoadingOr[String] = for {
     orderStatus <- getOrderStatus(orderId)
-    location <- trackLocation(orderStatus)
+    location    <- trackLocation(orderStatus)
   } yield location
 
   //TODO: the service layer API of a web app
@@ -64,10 +64,11 @@ object UsingMonads {
     def issueRequest(connection: Connection, payload: String): M[String]
   }
 
-  def getResponse[M[_] : Monad](service: HttpService[M], payload: String): Any = for {
-    conn <- service.getConnection(config)
-    response <- service.issueRequest(conn, payload)
-  } yield response
+  def getResponse[M[_]: Monad](service: HttpService[M], payload: String): Any =
+    for {
+      conn     <- service.getConnection(config)
+      response <- service.issueRequest(conn, payload)
+    } yield response
 
   object TryHttpService extends HttpService[Try] {
     override def getConnection(cfg: Map[String, String]): Try[Connection] =
@@ -78,7 +79,5 @@ object UsingMonads {
       else Failure(new RuntimeException("Forbidden"))
   }
 
-  def main(args: Array[String]): Unit = {
-
-  }
+  def main(args: Array[String]): Unit = {}
 }

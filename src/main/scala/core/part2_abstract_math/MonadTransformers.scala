@@ -13,10 +13,10 @@ object MonadTransformers {
   import cats.instances.list._ // fetch an implicit OptionT[List]
 
   val listOfNumberOptions: OptionT[List, Int] = OptionT(List(Option(1), Option(2)))
-  val listOfCharOptions: OptionT[List, Char] = OptionT(List(Option('a'), Option('b')))
+  val listOfCharOptions: OptionT[List, Char]  = OptionT(List(Option('a'), Option('b')))
   val listOfTuples: OptionT[List, (Int, Char)] = for {
     char <- listOfCharOptions
-    int <- listOfNumberOptions
+    int  <- listOfNumberOptions
   } yield (int, char)
 
   // either transformer
@@ -24,7 +24,8 @@ object MonadTransformers {
   import cats.data.EitherT
 
   val listOfEithers: EitherT[List, String, Int] = EitherT(List(Left("error"), Right(1)))
-  implicit val ec: ExecutionContextExecutorService = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(8))
+  implicit val ec: ExecutionContextExecutorService =
+    ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(8))
   val futureOfEither: EitherT[Future, String, Int] = EitherT(Future[Either[String, Int]](Left("done")))
 
   /*
@@ -33,7 +34,7 @@ object MonadTransformers {
    We measure bandwidth in units.
    We want to allocate TWO of our servers to cope with the traffic spike.
    We know the current capacity for each server and we know we'll hold the traffic if the sum of bandwidths is > 250.
-  */
+   */
   val bandwidths = Map(
     "server1.rockthejvm.com" -> 50,
     "server2.rockthejvm.com" -> 300,
@@ -42,7 +43,7 @@ object MonadTransformers {
   type AsyncResponse[T] = EitherT[Future, String, T]
 
   def getBandWidth(server: String): AsyncResponse[Int] = bandwidths.get(server) match {
-    case None => EitherT(Future[Either[String, Int]](Left("Not found")))
+    case None    => EitherT(Future[Either[String, Int]](Left("Not found")))
     case Some(b) => EitherT(Future[Either[String, Int]](Right(b)))
   }
 
@@ -57,7 +58,7 @@ object MonadTransformers {
   def generateTrafficSpikeReport(s1: String, s2: String): AsyncResponse[String] =
     canWithstandSurge(s1, s2).transform {
       case Right(_) => Right("Can handle")
-      case Left(_) => Left("Error")
+      case Left(_)  => Left("Error")
     }
 
 }

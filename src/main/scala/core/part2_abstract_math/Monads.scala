@@ -7,7 +7,7 @@ object Monads {
 
   // lists
   val numberList = List(1, 2, 3)
-  val charList = List('a', 'b', 'c')
+  val charList   = List('a', 'b', 'c')
 
   //TODO 1.1: how do you create all combination of (number, char)?
 
@@ -20,7 +20,7 @@ object Monads {
   // options
 
   val numberOptions: Option[Int] = Option(2)
-  val charOption: Option[Char] = Option('b')
+  val charOption: Option[Char]   = Option('b')
   val combinationOption: Option[(Int, Char)] = for {
     n <- numberOptions
     c <- charOption
@@ -30,9 +30,9 @@ object Monads {
 
   //futures
 
-  implicit val ec: ExecutionContext = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(8))
-  val numberFuture: Future[Int] = Future(42)
-  val charFuture: Future[Char] = Future('C')
+  implicit val ec: ExecutionContext       = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(8))
+  val numberFuture: Future[Int]           = Future(42)
+  val charFuture: Future[Char]            = Future('C')
   val combinedFuture: Future[(Int, Char)] = numberFuture.flatMap(n => charFuture.map((n, _)))
   val combinedFutureFor: Future[(Int, Char)] = for {
     n <- numberFuture
@@ -69,16 +69,16 @@ object Monads {
 
   import cats.instances.list._
 
-  val listMonad: Monad[List] = Monad[List]
-  val aList: List[Int] = listMonad.pure(3)
+  val listMonad: Monad[List]      = Monad[List]
+  val aList: List[Int]            = listMonad.pure(3)
   val aTransformedList: List[Int] = listMonad.flatMap(aList)(x => List(x, x + 1))
 
   //TODO 2: Use Monad[Future]
 
   import cats.instances.future._
 
-  val aFutureMonad: Monad[Future] = Monad[Future]
-  val aFuture: Future[Int] = aFutureMonad.pure(4)
+  val aFutureMonad: Monad[Future]        = Monad[Future]
+  val aFuture: Future[Int]               = aFutureMonad.pure(4)
   val aTransformedFuture: Future[String] = aFutureMonad.flatMap(aFuture)(x => Future(s"$x"))
 
   def getPairsF[M[_], A, B](ma: M[A], mb: M[B])(implicit monad: Monad[M]): M[(A, B)] =
@@ -89,7 +89,7 @@ object Monads {
   import cats.syntax.applicative._ // pure is here
 
   val oneOption: Option[Int] = 1.pure[Option] // implicit Monad[Option] will be used
-  val oneList: List[Int] = 1.pure[List]
+  val oneList: List[Int]     = 1.pure[List]
 
   import cats.syntax.flatMap._ // flatMap is here
 
@@ -103,20 +103,17 @@ object Monads {
 
   import cats.syntax.functor._
 
-  val oneOptionMapped: Option[Int] = Monad[Option].map(Option(2))(_ + 1)
+  val oneOptionMapped: Option[Int]  = Monad[Option].map(Option(2))(_ + 1)
   val oneOptionMapped2: Option[Int] = oneOption.map(_ + 2)
 
-
-  def getPairsShorter[M[_] : Monad, A, B](ma: M[A], mb: M[B]): M[(A, B)] =
+  def getPairsShorter[M[_]: Monad, A, B](ma: M[A], mb: M[B]): M[(A, B)] =
     for {
       a <- ma
       b <- mb
     } yield (a, b)
 
-  def getPairsShorterMap[M[_] : Monad, A, B](ma: M[A], mb: M[B]): M[(A, B)] =
+  def getPairsShorterMap[M[_]: Monad, A, B](ma: M[A], mb: M[B]): M[(A, B)] =
     ma.flatMap(a => mb.map((a, _)))
 
-  def main(args: Array[String]): Unit = {
-
-  }
+  def main(args: Array[String]): Unit = {}
 }

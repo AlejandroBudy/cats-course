@@ -8,12 +8,12 @@ object Semigroups {
   import cats.instances.int._
 
   val naturalIntSemigroup: Semigroup[Int] = Semigroup[Int]
-  val intCombination: Int = naturalIntSemigroup.combine(2, 46) // addition
+  val intCombination: Int                 = naturalIntSemigroup.combine(2, 46) // addition
 
   import cats.instances.string._
 
   val naturalStringSemigroup: Semigroup[String] = Semigroup[String]
-  val stringCombination: String = naturalStringSemigroup.combine("Hello", "world")
+  val stringCombination: String                 = naturalStringSemigroup.combine("Hello", "world")
 
   def reduceInts(list: List[Int]): Int = list.reduce(naturalIntSemigroup.combine)
 
@@ -23,8 +23,8 @@ object Semigroups {
   //TODO 1: support new type
   case class Expense(id: Long, amount: Double)
 
-  implicit val expenseSemigroup: Semigroup[Expense] = Semigroup.instance[Expense] {
-    (ex1, ex2) => Expense(ex1.id + ex2.id, ex1.amount + ex2.amount)
+  implicit val expenseSemigroup: Semigroup[Expense] = Semigroup.instance[Expense] { (ex1, ex2) =>
+    Expense(ex1.id + ex2.id, ex1.amount + ex2.amount)
   }
 
   //Extension methods from Semigroup -> |+| (combine)

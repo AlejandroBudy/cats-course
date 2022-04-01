@@ -16,7 +16,7 @@ object CatsIntro {
   import cats.instances.int._
 
   // part 3 - use the TC api
-  val intEquality: Eq[Int] = Eq[Int]
+  val intEquality: Eq[Int]         = Eq[Int]
   val aTypeSafeComparison: Boolean = intEquality.eqv(2, 3)
   // val anUnsafeComparison = intEquality.eqv(2, "a stirng") -> Not compile
 
@@ -35,7 +35,9 @@ object CatsIntro {
   // Part 6 - create TC instance for custom type
   case class ToyCar(model: String, price: Double)
 
-  implicit val toyCarEq: Eq[ToyCar] = Eq.instance[ToyCar] { (car1, car2) => car1.price == car2.price }
+  implicit val toyCarEq: Eq[ToyCar] = Eq.instance[ToyCar] { (car1, car2) =>
+    car1.price == car2.price
+  }
 
   val compareTwoToyCars: Boolean = ToyCar("Ferrari", 1.99) === ToyCar("Lambo", 1.99)
 }

@@ -7,7 +7,7 @@ object Evaluation {
   - evaluating an expression eagerly
   - evaluating lazily and every time you request it
   - evaluating lazily and keeping the value (memoizing)
- */
+   */
 
   import cats.Eval
 
@@ -47,13 +47,16 @@ object Evaluation {
   // "remember" a compute value
   val dontRecompute: Eval[Int] = redoEval.memoize
 
-  val tutorial: Eval[String] = Eval.always {
-    println("Step 1...")
-    "say hello"
-  }.map { step1 =>
-    println("Step 2 ...")
-    s"$step1 then put your left hand on the neck"
-  }.memoize
+  val tutorial: Eval[String] = Eval
+    .always {
+      println("Step 1...")
+      "say hello"
+    }
+    .map { step1 =>
+      println("Step 2 ...")
+      s"$step1 then put your left hand on the neck"
+    }
+    .memoize
     .map { steps12 =>
       println("Step 3, more complicated")
       s"$steps12 then with the right hand strike the strings"

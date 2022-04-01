@@ -9,7 +9,12 @@ object Readers {
     - a business logic layer
    */
 
-  case class Configuration(dbUserName: String, dbPassword: String, host: String, port: Int, nThreads: Int, emailReplyTo: String)
+  case class Configuration(dbUserName: String,
+                           dbPassword: String,
+                           host: String,
+                           port: Int,
+                           nThreads: Int,
+                           emailReplyTo: String)
 
   case class DBConnection(username: String, password: String) {
     def getOrderStatus(orderId: Long): String = "dispatched"
@@ -29,19 +34,20 @@ object Readers {
   import cats.data.Reader
 
   val dbReader: Reader[Configuration, DBConnection] = Reader(conf => DBConnection(conf.dbUserName, conf.dbPassword))
-  val dbConn: DBConnection = dbReader.run(config)
+  val dbConn: DBConnection                          = dbReader.run(config)
 
   val orderStatusReader: Reader[Configuration, String] = dbReader.map(_.getOrderStatus(1234))
-  val orderStatus: String = orderStatusReader.run(config)
+  val orderStatus: String                              = orderStatusReader.run(config)
 
   def getLastOrderStatus(username: String): String = {
     val usersLastOrderId: Reader[Configuration, String] =
-      dbReader.map(_.getLastOrderId(username))
+      dbReader
+        .map(_.getLastOrderId(username))
         .flatMap(lastOderId => dbReader.map(_.getOrderStatus(lastOderId)))
 
     val userLastOrderIdFor: Reader[Configuration, String] = for {
       lastOrderId <- dbReader.map(_.getLastOrderId(username))
-      status <- dbReader.map(_.getOrderStatus(lastOrderId))
+      status      <- dbReader.map(_.getOrderStatus(lastOrderId))
     } yield status
 
     userLastOrderIdFor.run(config)
@@ -54,7 +60,6 @@ object Readers {
     4. when you need the final piece of information, you call run on the reader with the initial data structure
    */
 
-
   case class EmailService(emailReplyTo: String) {
     def sendEmail(address: String, contents: String) = s"From: $emailReplyTo; to: $address >>> $contents"
   }
@@ -65,13 +70,17 @@ object Readers {
     // Email them with the Email Service: "Your last order status: (status)"
     val emailReader: Reader[Configuration, EmailService] = Reader(conf => EmailService(conf.emailReplyTo))
 
-    val serviceReader = dbReader.map(_.getLastOrderId(username))
-      .flatMap(lastOrderId => dbReader.map(_.getOrderStatus(lastOrderId))
-        .flatMap(orderStatus => emailReader.map(_.sendEmail(userEmail, orderStatus))))
+    val serviceReader = dbReader
+      .map(_.getLastOrderId(username))
+      .flatMap(
+        lastOrderId =>
+          dbReader
+            .map(_.getOrderStatus(lastOrderId))
+            .flatMap(orderStatus => emailReader.map(_.sendEmail(userEmail, orderStatus))))
 
     val serviceReaderFor: Reader[Configuration, String] = for {
-      lastOrderId <- dbReader.map(_.getLastOrderId(username))
-      status <- dbReader.map(_.getOrderStatus(lastOrderId))
+      lastOrderId  <- dbReader.map(_.getLastOrderId(username))
+      status       <- dbReader.map(_.getOrderStatus(lastOrderId))
       emailService <- emailReader
     } yield emailService.sendEmail(userEmail, s"Your last order status: $status")
 

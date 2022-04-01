@@ -10,7 +10,7 @@ object FunctionalState {
   import cats.data.State
 
   val countAndSay: State[Int, String] = State(currentCount => (currentCount + 1, s"Counted $currentCount"))
-  val (eleven, counted10) = countAndSay.run(10).value
+  val (eleven, counted10)             = countAndSay.run(10).value
 
   // state = "iterative" computations
 
@@ -21,14 +21,13 @@ object FunctionalState {
   val secondComputation = s"Multiplied with 5, obtained $a"
 
   // pure FP with states
-  val firstTransformation: State[Int, String] = State((s: Int) => (s + 1, s"Added 1 to 10, obtained ${s + 1}"))
+  val firstTransformation: State[Int, String]  = State((s: Int) => (s + 1, s"Added 1 to 10, obtained ${s + 1}"))
   val secondTransformation: State[Int, String] = State((s: Int) => (s * 5, s"Multiplied with 5, obtained ${s * 5}"))
   val compositeTransformation: State[Int, (String, String)] =
-    firstTransformation.flatMap(
-      firstResult => secondTransformation.map(secondResult => (firstResult, secondResult)))
+    firstTransformation.flatMap(firstResult => secondTransformation.map(secondResult => (firstResult, secondResult)))
 
   val compositeTransformation2: State[Int, (String, String)] = for {
-    firstResult <- firstTransformation
+    firstResult  <- firstTransformation
     secondResult <- secondTransformation
   } yield (firstResult, secondResult)
 
@@ -36,11 +35,12 @@ object FunctionalState {
   case class ShoppingCart(items: List[String], total: Double)
 
   def addToCart(item: String, price: Double): State[ShoppingCart, Double] =
-    State((current: ShoppingCart) => (ShoppingCart(current.items :+ item, current.total + price), current.total + price))
+    State(
+      (current: ShoppingCart) => (ShoppingCart(current.items :+ item, current.total + price), current.total + price))
 
   val boxerCart: State[ShoppingCart, Double] = for {
-    _ <- addToCart("Boxing gloves", 80)
-    _ <- addToCart("Bucal", 10)
+    _     <- addToCart("Boxing gloves", 80)
+    _     <- addToCart("Bucal", 10)
     total <- addToCart("Boxing boots", 50)
   } yield total
 

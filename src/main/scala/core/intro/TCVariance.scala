@@ -3,7 +3,7 @@ package core.intro
 object TCVariance {
 
   import cats.Eq
-  import cats.instances.int._ // Eq[Int] TC instance
+  import cats.instances.int._    // Eq[Int] TC instance
   import cats.instances.option._ // construct a Eq[Option[Int]] TC instance
   import cats.syntax.eq._
 
@@ -35,7 +35,7 @@ object TCVariance {
   def makeSound[T](implicit soundMaker: SoundMaker[T]): Unit = println("wow")
 
   makeSound[Animal] // Ok - TC defined above
-  makeSound[Cat] // Ok - TC instance for animal is also applicable to Cats
+  makeSound[Cat]    // Ok - TC instance for animal is also applicable to Cats
   // rule 1: Contravariant TCs can use the superclass instances if nothing is available strictly for that type
 
   implicit object OptionSoundMaker extends SoundMaker[Option[Int]]

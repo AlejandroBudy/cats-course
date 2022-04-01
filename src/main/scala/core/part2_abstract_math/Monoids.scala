@@ -9,7 +9,7 @@ object Monoids {
   val numbers: List[Int] = (1 to 100).toList
 
   // |+| is always associative
-  val sumLeft: Int = numbers.foldLeft(0)(_ |+| _)
+  val sumLeft: Int  = numbers.foldLeft(0)(_ |+| _)
   val sumRight: Int = numbers.foldRight(0)(_ |+| _)
 
   //define a general API
@@ -21,17 +21,17 @@ object Monoids {
   import cats.Monoid
 
   val intMonoid: Monoid[Int] = Monoid[Int]
-  val combineInt: Int = intMonoid.combine(23, 99)
-  val zero: Int = intMonoid.empty // 0
+  val combineInt: Int        = intMonoid.combine(23, 99)
+  val zero: Int              = intMonoid.empty // 0
 
   import cats.instances.string._
 
-  val emptyString: String = Monoid[String].empty
+  val emptyString: String   = Monoid[String].empty
   val combineString: String = Monoid[String].combine("I like ", "Monoids!")
 
   import cats.instances.option._ // construct an implicit Monoid[Option[Int]]
 
-  val emptyOption: Option[Int] = Monoid[Option[Int]].empty
+  val emptyOption: Option[Int]        = Monoid[Option[Int]].empty
   val emptyOptionCombine: Option[Int] = Monoid[Option[Int]].combine(Option(2), Option.empty[Int])
 
   // extension methods for monoid -> |+|
