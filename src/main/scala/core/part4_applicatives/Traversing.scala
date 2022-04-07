@@ -46,4 +46,6 @@ object Traversing {
       (accum, elementWrapped).mapN(_ :+ _)
     }
 
+  def main(args: Array[String]): Unit = {
+  }
 }

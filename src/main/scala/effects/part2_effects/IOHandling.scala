@@ -24,7 +24,7 @@ object IOHandling {
       Exercises
    */
   // 1- Construct potentially failed IOs from standard data types( Option, Try, Either)
-  def option2IO[A](option: Option[A])(ifEmpty: Throwable): IO[A] = option.fold(IO.raiseError(ifEmpty))(IO.pure(_))
+  def option2IO[A](option: Option[A])(ifEmpty: Throwable): IO[A] = ???//option.fold(IO.raiseError(ifEmpty))(IO.pure(_))
   def try2IO[A](aTry: Try[A]): IO[A]                             = aTry.fold(IO.raiseError, IO.pure)
   def either2IO[A](anEither: Either[Throwable, A]): IO[A]        = anEither.fold(IO.raiseError, IO.pure)
 

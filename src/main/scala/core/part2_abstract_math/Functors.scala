@@ -61,7 +61,6 @@ object Functors {
       case Branch(v, left, right) => Branch(f(v), map(left)(f), map(right)(f))
     }
   }
-
   // extension method - map
 
   import cats.syntax.functor._
